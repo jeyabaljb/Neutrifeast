@@ -6,6 +6,8 @@ import { getPage, isPreview } from "@/lib/contentstack";
 import Page from "@/components/Page";
 // Importing the Preview component to render live preview content
 import Preview from "@/components/Preview";
+// Importing the Neutrifeast component for the new home route
+import Neutrifeast from "@/components/Neutrifeast";
 
 // Home page component - serves as the main entry point for the application
 // This is an async server component that can fetch data at build time or request time
@@ -27,5 +29,10 @@ export default async function Home() {
   const page = await getPage("/"); // Fetch home page content from Contentstack
 
   // Return the static Page component with the pre-fetched data
-  return <Page page={page} />;
+  if (page) {
+    return <Page page={page} />;
+  }
+
+  // If no page data is found, return the Neutrifeast component
+  return <Neutrifeast />;
 }

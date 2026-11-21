@@ -1,34 +1,37 @@
-import contentstack from "@contentstack/delivery-sdk"
+import contentstack from "@contentstack/delivery-sdk";
 import ContentstackLivePreview, { IStackSdk } from "@contentstack/live-preview-utils";
 import { GraphQLHeaders, Page } from "./types";
 import { GraphQLClient } from "graphql-request";
-import { graphql } from "../gql"
+import { graphql } from "../gql";
 import { getContentstackEndpoint, type ContentstackEndpoints } from "@contentstack/utils";
 
-const endpoints = getContentstackEndpoint(process.env.NEXT_PUBLIC_CONTENTSTACK_REGION || 'NA', '', true) as ContentstackEndpoints
+const apiKey = process.env.NEXT_PUBLIC_CONTENTSTACK_API_KEY;
+const deliveryToken = process.env.NEXT_PUBLIC_CONTENTSTACK_DELIVERY_TOKEN;
+const environment = process.env.NEXT_PUBLIC_CONTENTSTACK_ENVIRONMENT;
+
 export const isPreview = process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === "true";
 
+const endpoints = getContentstackEndpoint(
+  process.env.NEXT_PUBLIC_CONTENTSTACK_REGION || "EU",
+  "",
+  true
+) as ContentstackEndpoints;
+
 export const stack = contentstack.stack({
-  apiKey: process.env.NEXT_PUBLIC_CONTENTSTACK_API_KEY as string,
-  deliveryToken: process.env.NEXT_PUBLIC_CONTENTSTACK_DELIVERY_TOKEN as string,
-  environment: process.env.NEXT_PUBLIC_CONTENTSTACK_ENVIRONMENT as string,
-
-  // Setting the region
-  // for custom or dedicated Contentstack environments, override each endpoint individually using environment variables.
-  // You can omit this if you have set a region above. Use @contentstack/utils getContentstackEndpoint to get the right urls for your region.
+  apiKey: apiKey || "not-configured",
+  deliveryToken: deliveryToken || "not-configured",
+  environment: environment || "preview",
   region: process.env.NEXT_PUBLIC_CONTENTSTACK_REGION as any,
-
-  // Setting the host for content delivery based on the region or environment variables
-  // for custom or dedicated Contentstack environments, override each endpoint individually using environment variables.
-  host: process.env.NEXT_PUBLIC_CONTENTSTACK_CONTENT_DELIVERY || endpoints.contentDelivery as string,
-
+  host:
+    process.env.NEXT_PUBLIC_CONTENTSTACK_CONTENT_DELIVERY ||
+    (endpoints.contentDelivery as string),
   live_preview: {
-    enable: isPreview,
+    enable: isPreview && Boolean(apiKey),
     preview_token: process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW_TOKEN,
-    // Setting the host for live preview based on the region
-    // for custom or dedicated Contentstack environments, override each endpoint individually using environment variables.
-    host: process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW_HOST || endpoints.preview as string
-  }
+    host:
+      process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW_HOST ||
+      (endpoints.preview as string),
+  },
 });
 
 export function initLivePreview() {
@@ -38,49 +41,48 @@ export function initLivePreview() {
     mode: "builder",
     stackSdk: stack.config as IStackSdk,
     stackDetails: {
-      apiKey: process.env.NEXT_PUBLIC_CONTENTSTACK_API_KEY as string,
-      environment: process.env.NEXT_PUBLIC_CONTENTSTACK_ENVIRONMENT as string,
+      apiKey: apiKey as string,
+      environment: environment as string,
     },
     clientUrlParams: {
-      // Setting the client URL parameters for live preview
-      // for custom or dedicated Contentstack environments, override each endpoint individually using environment variables.
-      host: process.env.NEXT_PUBLIC_CONTENTSTACK_CONTENT_APPLICATION || endpoints.application as string
+      host:
+        process.env.NEXT_PUBLIC_CONTENTSTACK_CONTENT_APPLICATION ||
+        (endpoints.application as string),
     },
     editButton: {
       enable: true,
-      exclude: ["outsideLivePreviewPortal"]
+      exclude: ["outsideLivePreviewPortal"],
     },
   });
 }
 
 export async function getPage(url: string, previewTimestamp?: string) {
-  const apiKey = process.env.NEXT_PUBLIC_CONTENTSTACK_API_KEY;
-  const environment = process.env.NEXT_PUBLIC_CONTENTSTACK_ENVIRONMENT;
-  const accessToken = process.env.NEXT_PUBLIC_CONTENTSTACK_DELIVERY_TOKEN as string;
+  if (!apiKey || !deliveryToken || !environment) {
+    return undefined;
+  }
+
   const previewToken = process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW_TOKEN as string;
   const hash = ContentstackLivePreview.hash;
-
-  // Use environment variables if they exist, otherwise fall back to endpoints
-  // for internal testing purposes at Contentstack we look for a custom host in the env vars, you do not have to do this.
-  const graphqlUrl = process.env.NEXT_PUBLIC_CONTENTSTACK_CONTENT_DELIVERY || endpoints.graphqlDelivery;
-  const graphqlPreviewUrl = process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW_HOST || endpoints.graphqlPreview;
-
-  const baseURL = isPreview && hash ? graphqlPreviewUrl : graphqlUrl
+  const graphqlUrl =
+    process.env.NEXT_PUBLIC_CONTENTSTACK_CONTENT_DELIVERY ||
+    endpoints.graphqlDelivery;
+  const graphqlPreviewUrl =
+    process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW_HOST ||
+    endpoints.graphqlPreview;
+  const baseURL = isPreview && hash ? graphqlPreviewUrl : graphqlUrl;
 
   const headers: GraphQLHeaders = {
-    access_token: accessToken
-  }
+    access_token: deliveryToken,
+  };
 
   if (hash) {
     headers.live_preview = hash;
-    headers.preview_token = previewToken
+    headers.preview_token = previewToken;
     headers.preview_timestamp = previewTimestamp;
   }
 
   const gqEndpoint = `https://${baseURL}/stacks/${apiKey}?environment=${environment}`;
-  const graphQLClient = new GraphQLClient(gqEndpoint, {
-    headers
-  })
+  const graphQLClient = new GraphQLClient(gqEndpoint, { headers });
 
   const query = graphql(`
     query Page($url: String!) {
@@ -123,38 +125,35 @@ export async function getPage(url: string, previewTimestamp?: string) {
         }
       }
     }
-  `)
+  `);
 
-  const variables = {
-    url: url || "/",
+  const res = await graphQLClient.request(query, { url: url || "/" });
+  const fullPage = res?.all_page?.items?.[0];
+
+  const fixedEntryForEditableTags = fullPage && {
+    ...fullPage,
+    image:
+      fullPage.imageConnection?.edges?.[0]?.node,
+    blocks:
+      fullPage.blocks?.map((block) => ({
+        ...block,
+        block: {
+          ...block?.block,
+          image:
+            block?.block?.imageConnection?.edges?.[0]?.node || null,
+        },
+      })),
+    uid: fullPage.system?.uid,
+    _content_type_uid: fullPage.system?.content_type_uid,
   };
 
-  const res = await graphQLClient.request(
-    query,
-    variables
-  );
-
-  // needed for editable tags
-  const fullPage = res?.all_page?.items && res?.all_page?.items[0]
-  const fixedEntryForEditableTags = res?.all_page?.items && {
-    ...fullPage,
-    image: fullPage?.imageConnection?.edges && fullPage?.imageConnection?.edges[0]?.node,
-    blocks: fullPage?.blocks && fullPage?.blocks.map(block => ({
-      ...block,
-      block: {
-        ...block?.block,
-        image: block?.block && block?.block.imageConnection?.edges?.[0]?.node || null
-      }
-    })),
-    uid: res?.all_page?.items[0]?.system?.uid,
-    _content_type_uid: res?.all_page?.items[0]?.system?.content_type_uid
+  if (isPreview && fixedEntryForEditableTags) {
+    contentstack.Utils.addEditableTags(
+      fixedEntryForEditableTags as Page,
+      "page",
+      true
+    );
   }
 
-  const entry = fixedEntryForEditableTags;
-
-  if (isPreview) {
-    entry && contentstack.Utils.addEditableTags(entry as Page, 'page', true);
-  }
-
-  return entry as Page
+  return fixedEntryForEditableTags as Page | undefined;
 }
