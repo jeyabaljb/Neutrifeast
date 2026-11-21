@@ -140,12 +140,11 @@ export default function Neutrifeast() {
       <footer className="nf-footer" id="contact">
         <div>
           <img className="nf-footer-logo" src="/image.png" alt="Neutrifeast" />
-          <p>Crafted with love, served with care.</p>
         </div>
         <div className="nf-footer-links">
-          <a href="tel:+919360257567">+91 93602 57567</a>
-          <a href="https://www.instagram.com/neutrifeast/" target="_blank" rel="noreferrer">@neutrifeast</a>
-          <a href="https://www.youtube.com/@NeutriFeast" target="_blank" rel="noreferrer">YouTube @NeutriFeast</a>
+          <a href="tel:+919360257567"><img src="/whatsapp.svg" alt="WhatsApp" /> <span>+91 93602 57567</span></a>
+          <a href="https://www.instagram.com/neutrifeast/" target="_blank" rel="noreferrer"><img src="/instagram.svg" alt="Instagram" /> <span>@neutrifeast</span></a>
+          <a href="https://www.youtube.com/@NeutriFeast" target="_blank" rel="noreferrer"><img src="/youtube.svg" alt="YouTube" /> <span>@NeutriFeast</span></a>
         </div>
         <a className="nf-primary" href="https://wa.me/919360257567" target="_blank" rel="noreferrer">WhatsApp to order</a>
       </footer>

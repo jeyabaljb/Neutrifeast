@@ -81,11 +81,64 @@ a { color: inherit; text-decoration: none; }
 .nf-nuts { margin-top: 24px; background: var(--green); color: white; border-radius: 24px; padding: 32px 38px; }.nf-nuts h3 { margin: 0 0 20px; font-family: Georgia, serif; font-size: 36px; }.nf-nuts > div { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }.nf-nuts p { margin: 0; display: flex; flex-direction: column; gap: 8px; border-left: 1px solid rgba(255,255,255,.25); padding-left: 16px; }.nf-nuts strong { color: #efc76d; }
 
 .nf-story { background: var(--orange); color: white; min-height: 360px; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 80px; padding: 70px max(28px, calc((100% - 1124px)/2)); }.nf-story .nf-kicker { color: #ffe3b2; }.nf-story h2 { margin: 12px 0 0; font-family: Georgia, serif; font-size: clamp(48px, 6vw, 78px); line-height: .95; }.nf-story > p { max-width: 470px; font-family: Georgia, serif; font-size: 21px; line-height: 1.7; }
-.nf-footer { min-height: 190px; max-width: 1180px; margin: auto; padding: 50px 28px; display: grid; grid-template-columns: 1.3fr 1fr auto; align-items: center; }.nf-footer-logo { width: 110px; height: 110px; border-radius: 50%; }.nf-footer p { color: #766b57; }.nf-footer-links { display: flex; flex-direction: column; gap: 8px; font-weight: 800; }.nf-footer .nf-primary { text-align: center; }
+.nf-footer { min-height: 190px; max-width: 1180px; margin: auto; padding: 50px 28px; display: grid; grid-template-columns: 1.3fr 1fr auto; align-items: center; }.nf-footer-logo { width: 110px; height: 110px; border-radius: 50%; }.nf-footer p { color: #766b57; }.nf-footer-links { display: flex; flex-direction: column; gap: 10px; font-weight: 800; }.nf-footer-links a { display: flex; align-items: center; gap: 10px; }.nf-footer-links img { width: 28px; height: 28px; flex: 0 0 28px; object-fit: contain; }.nf-footer-links span { line-height: 1.2; }
 
+/* Responsive layout */
 @media (max-width: 900px) {
-  .nf-nav { height: 82px; }.nf-nav nav { display: none; }.nf-hero { grid-template-columns: 1fr; padding-top: 30px; }.nf-hero-copy { text-align: center; }.nf-intro { margin-inline: auto; }.nf-actions { justify-content: center; }.nf-hero-art { width: min(560px, 100%); margin: 48px auto 0; }.nf-category-grid, .nf-featured { grid-template-columns: 1fr; }.nf-nuts > div { grid-template-columns: repeat(2, 1fr); }.nf-story { grid-template-columns: 1fr; gap: 20px; }.nf-footer { grid-template-columns: 1fr 1fr; gap: 24px; }.nf-footer .nf-primary { grid-column: 1 / -1; }
+  .nf-nav { height: 82px; }
+  .nf-nav nav { display: none; }
+  .nf-hero { grid-template-columns: 1fr; min-height: auto; padding-top: 24px; }
+  .nf-hero-copy { text-align: center; }
+  .nf-intro { margin-inline: auto; }
+  .nf-actions { justify-content: center; }
+  .nf-hero-art { width: min(560px, 100%); margin: 40px auto 0; }
+  .nf-category-grid, .nf-featured { grid-template-columns: 1fr; }
+  .nf-featured { max-width: 680px; margin-inline: auto; }
+  .nf-nuts > div { grid-template-columns: repeat(2, 1fr); }
+  .nf-story { grid-template-columns: 1fr; gap: 24px; }
+  .nf-story > p { max-width: 620px; }
+  .nf-footer { grid-template-columns: 1fr 1.4fr; gap: 28px; }
+  .nf-footer .nf-primary { grid-column: 1 / -1; justify-self: center; }
 }
+
 @media (max-width: 600px) {
-  .nf-nav { height: 76px; padding-inline: 18px; }.nf-brand-logo { width: 58px; height: 58px; }.nf-order { padding: 10px 14px; }.nf-hero { padding: 20px 18px 50px; }.nf-hero h1 { font-size: 58px; letter-spacing: -3px; }.nf-intro { font-size: 16px; }.nf-actions { flex-direction: column; }.nf-hero-art { height: 410px; }.nf-bowl { width: 210px; height: 125px; left: 50px; bottom: 76px; }.nf-bowl::before { width: 196px; }.nf-cookie { width: 66px; height: 66px; }.nf-sun { width: 180px; height: 180px; }.nf-marquee { justify-content: flex-start; overflow: hidden; white-space: nowrap; padding-left: 18px; }.nf-menu { padding: 72px 18px 80px; }.nf-category { padding: 24px 20px; }.nf-category-head h3 { font-size: 26px; }.nf-feature-card { min-height: 560px; }.nf-feature-copy h3 { font-size: 36px; }.nf-nuts { padding: 26px 20px; }.nf-nuts > div { grid-template-columns: 1fr; }.nf-story { padding: 58px 18px; }.nf-story h2 { font-size: 50px; }.nf-footer { grid-template-columns: 1fr; padding: 42px 18px; text-align: center; }.nf-footer-logo { margin: 0 auto; }.nf-footer .nf-primary { grid-column: auto; }
+  .nf-nav { height: 76px; padding-inline: 18px; }
+  .nf-brand-logo { width: 58px; height: 58px; }
+  .nf-order { padding: 10px 14px; font-size: 13px; }
+  .nf-hero { padding: 20px 18px 50px; }
+  .nf-hero h1 { font-size: clamp(48px, 15vw, 58px); letter-spacing: -3px; }
+  .nf-intro { font-size: 16px; }
+  .nf-actions { flex-direction: column; gap: 16px; }
+  .nf-hero-art { height: 410px; }
+  .nf-bowl { width: 210px; height: 125px; left: 50px; bottom: 76px; }
+  .nf-bowl::before { width: 196px; }
+  .nf-cookie { width: 66px; height: 66px; }
+  .nf-sun { width: 180px; height: 180px; }
+  .nf-art-label { width: 96px; height: 96px; }
+  .nf-marquee { justify-content: flex-start; overflow-x: hidden; white-space: nowrap; padding-left: 18px; font-size: 10px; }
+  .nf-menu { padding: 72px 18px 80px; }
+  .nf-section-heading { margin-bottom: 38px; }
+  .nf-section-heading h2 { font-size: 44px; }
+  .nf-category { padding: 24px 20px; }
+  .nf-category-head h3 { font-size: 26px; }
+  .nf-feature-card { min-height: 560px; padding: 16px; }
+  .nf-feature-copy h3 { font-size: 36px; }
+  .nf-nuts { padding: 26px 20px; }
+  .nf-nuts > div { grid-template-columns: 1fr; }
+  .nf-nuts p { border-left: 0; border-bottom: 1px solid rgba(255,255,255,.18); padding: 0 0 12px; }
+  .nf-story { min-height: 0; padding: 58px 18px; text-align: left; }
+  .nf-story h2 { font-size: 50px; }
+  .nf-story > p { font-size: 18px; }
+  .nf-footer { grid-template-columns: 1fr; padding: 42px 18px; text-align: center; justify-items: center; }
+  .nf-footer-logo { width: 130px; height: 130px; }
+  .nf-footer-links { align-items: flex-start; text-align: left; }
+  .nf-footer .nf-primary { grid-column: auto; }
+}
+
+@media (max-width: 380px) {
+  .nf-order { display: none; }
+  .nf-hero h1 { font-size: 44px; }
+  .nf-hero-art { height: 360px; }
+  .nf-bowl { left: 30px; }
+  .nf-feature-list div { font-size: 14px; }
 }
