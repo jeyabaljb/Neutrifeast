@@ -28,11 +28,15 @@ export default async function Home() {
   // In production mode, fetch the page data server-side for better performance
   const page = await getPage("/"); // Fetch home page content from Contentstack
 
+  const isKickstartEntry =
+    page?.title?.toLowerCase().includes("contentstack kickstart") ||
+    page?.description?.toLowerCase().includes("kickstart");
+
   // Return the static Page component with the pre-fetched data
-  if (page) {
+  if (page && !isKickstartEntry) {
     return <Page page={page} />;
   }
 
-  // If no page data is found, return the Neutrifeast component
+  // If no page data is found or if it's a kickstart entry, return the Neutrifeast component
   return <Neutrifeast />;
 }

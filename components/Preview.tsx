@@ -13,6 +13,7 @@ import { getPage, initLivePreview } from "@/lib/contentstack";
 import type { Page as PageProps } from "@/lib/types";
 // Importing the Page component to render the content
 import Page from "./Page";
+import Neutrifeast from "./Neutrifeast";
 
 // Loading state component displayed while content is being fetched
 const LoadingState = () => (
@@ -36,18 +37,26 @@ export default function Preview({ path }: { path: string }) {
   const getContent = useCallback(async () => {
     const data = await getPage(path, previewTimestamp || undefined); // Fetch page data from Contentstack
     setPage(data); // Update state with fetched data
-  }, [path]); // Dependency array - function recreated only when path changes
+  }, [path, previewTimestamp]); // Re-fetch when the URL preview timestamp changes
 
   // Effect hook to initialize live preview and set up content change listener
   useEffect(() => {
-    initLivePreview(); // Initialize Contentstack Live Preview functionality
-    // Set up listener for content changes in the Contentstack interface
-    ContentstackLivePreview.onEntryChange(getContent); // Refetch content when changes occur
-  }, [path]); // Re-run effect when path changes
+    initLivePreview();
+    getContent();
+    ContentstackLivePreview.onEntryChange(getContent);
+  }, [getContent]);
 
-  // Show loading state while page data is being fetched
+  // Show the branded fallback while page data is loading.
   if (!page) {
-    return <LoadingState />;
+    return <Neutrifeast />;
+  }
+
+  const isKickstartEntry =
+    page.title?.toLowerCase().includes("contentstack kickstart") ||
+    page.description?.toLowerCase().includes("kickstart");
+
+  if (isKickstartEntry) {
+    return <Neutrifeast />;
   }
 
   // Render the Page component with the fetched page data
