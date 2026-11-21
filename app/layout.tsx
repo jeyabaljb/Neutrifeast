@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Neutrifeast | Homemade Goodness",
   description:
     "Wholesome millet biscuits, laddus, brownies and cakes handmade with care.",
-  icons: { icon: "/neutrifeast-logo.svg" },
+  icons: { icon: "/image.png" },
 };
 
 export default function RootLayout({

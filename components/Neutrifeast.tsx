@@ -38,7 +38,7 @@ export default function Neutrifeast() {
     <main className="nf-site">
       <header className="nf-nav">
         <a className="nf-brand" href="#top" aria-label="Neutrifeast home">
-          <img className="nf-brand-logo" src="/neutrifeast-logo.svg" alt="Neutrifeast" />
+          <img className="nf-brand-logo" src="/image.png" alt="Neutrifeast" />
         </a>
         <nav aria-label="Main navigation">
           <a href="#menu">Menu</a>
@@ -125,18 +125,27 @@ export default function Neutrifeast() {
       </section>
 
       <section className="nf-story" id="story">
-        <div><p className="nf-kicker">Made the honest way</p><h2>Simple ingredients.<br />Real comfort.</h2></div>
-        <p>Every Neutrifeast batch is prepared in small quantities with thoughtfully chosen grains, millets and familiar flavours. We also customise recipes to suit your preference.</p>
+        <div>
+          <p className="nf-kicker">Made the honest way</p>
+          <h2>Warmth in every.<br />Homemade bite.</h2>
+        </div>
+        <p>
+          Neutrifeast is dedicated to bringing the warm aroma of homemade goodness
+          to every corner of the town. We bake with love, care, and deep passion,
+          ensuring every bite feels like home. Perfect for every occasion — from
+          daily cravings to life&apos;s most special moments.
+        </p>
       </section>
 
       <footer className="nf-footer" id="contact">
         <div>
-          <img className="nf-footer-logo" src="/neutrifeast-logo.svg" alt="Neutrifeast" />
+          <img className="nf-footer-logo" src="/image.png" alt="Neutrifeast" />
           <p>Crafted with love, served with care.</p>
         </div>
         <div className="nf-footer-links">
           <a href="tel:+919360257567">+91 93602 57567</a>
           <a href="https://www.instagram.com/neutrifeast/" target="_blank" rel="noreferrer">@neutrifeast</a>
+          <a href="https://www.youtube.com/@NeutriFeast" target="_blank" rel="noreferrer">YouTube @NeutriFeast</a>
         </div>
         <a className="nf-primary" href="https://wa.me/919360257567" target="_blank" rel="noreferrer">WhatsApp to order</a>
       </footer>
